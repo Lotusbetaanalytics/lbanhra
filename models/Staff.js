@@ -91,7 +91,7 @@ const StaffSchema = new mongoose.Schema({
   resumptionDate: { type: String },
   bank: { type: String },
   accountNumber: { type: String },
-  decription: { type: String },
+  description: { type: String },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
