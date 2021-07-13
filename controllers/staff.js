@@ -103,41 +103,33 @@ const sendTokenResponse = (staff, statusCode, res) => {
 // @route   GET/api/v1/staff/upload
 // @access   Private
 exports.uploadPhoto = asyncHandler(async (req, res, next) => {
-  // if (!req.files) {
-  //   return next(new ErrorResponse(`Please Upload a picture`, 400));
-  // }
+  if (!req.files) {
+    return next(new ErrorResponse(`Please Upload a picture`, 400));
+  }
 
-  console.log(req.body);
-  console.log(req.files);
-  //const file = req.files.file;
+  const file = req.files.file;
+  // Make sure the image is a photo
+  if (!file.mimetype.startsWith("image")) {
+    return next(new ErrorResponse(`Please Upload an image file`, 400));
+  }
 
-  // //Make sure the image is a photo
-  // if (!file.mimetype.startsWith("image")) {
-  //   return next(new ErrorResponse(`Please Upload an image file`, 400));
-  // }
+  // Check filesize
+  if (file.size > process.env.MAX_FILE_UPLOAD) {
+    return next(new ErrorResponse(`Please Upload an image less than 5MB`, 400));
+  }
 
-  // // Check filesize
-  // if (file.size > process.env.MAX_FILE_UPLOAD) {
-  //   return next(
-  //     new ErrorResponse(
-  //       `Please Upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
-  //       400
-  //     )
-  //   );
-  // }
+  //crete custom filename
+  file.name = `photo_${req.staff.id}${path.parse(file.name).ext}`;
 
-  // //crete custom filename
-  // file.name = `photo_${req.staff.id}${path.parse(file.name).ext}`;
-
-  // file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
-  //   if (err) {
-  //     console.error(err);
-  //     return next(new ErrorResponse(`An error occured while uploading`, 500));
-  //   }
-  //   await Staff.findByIdAndUpdate(req.staff.id, { photo: file.name });
-  //   res.status(200).json({
-  //     success: true,
-  //     data: file.name,
-  //   });
-  // });
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+    if (err) {
+      console.error(err);
+      return next(new ErrorResponse(`An error occured while uploading`, 500));
+    }
+    await Staff.findByIdAndUpdate(req.staff.id, { photo: file.name });
+    res.status(200).json({
+      success: true,
+      data: file.name,
+    });
+  });
 });
