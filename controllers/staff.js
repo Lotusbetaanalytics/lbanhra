@@ -1,6 +1,7 @@
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const Staff = require("../models/Staff");
+const path = require("path");
 
 // @desc    Create Staff/
 // @route   POST/api/v1/Student/register
@@ -69,7 +70,7 @@ exports.updateStaff = asyncHandler(async (req, res, next) => {
 
 // @desc    Set Staff PAssword/
 // @route   GET/api/v1/staff/password/:id
-// @access   Private/Admin/HR/MAnager
+// @access   Private
 exports.setStaffPassword = asyncHandler(async (req, res, next) => {
   let staff = await Staff.findById(req.params.id);
   staff.password = req.body.password;
@@ -97,3 +98,46 @@ const sendTokenResponse = (staff, statusCode, res) => {
     token,
   });
 };
+
+// @desc   Upload Dsipaly Photo/
+// @route   GET/api/v1/staff/upload
+// @access   Private
+exports.uploadPhoto = asyncHandler(async (req, res, next) => {
+  // if (!req.files) {
+  //   return next(new ErrorResponse(`Please Upload a picture`, 400));
+  // }
+
+  console.log(req.body);
+  console.log(req.files);
+  //const file = req.files.file;
+
+  // //Make sure the image is a photo
+  // if (!file.mimetype.startsWith("image")) {
+  //   return next(new ErrorResponse(`Please Upload an image file`, 400));
+  // }
+
+  // // Check filesize
+  // if (file.size > process.env.MAX_FILE_UPLOAD) {
+  //   return next(
+  //     new ErrorResponse(
+  //       `Please Upload an image less than ${process.env.MAX_FILE_UPLOAD}`,
+  //       400
+  //     )
+  //   );
+  // }
+
+  // //crete custom filename
+  // file.name = `photo_${req.staff.id}${path.parse(file.name).ext}`;
+
+  // file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+  //   if (err) {
+  //     console.error(err);
+  //     return next(new ErrorResponse(`An error occured while uploading`, 500));
+  //   }
+  //   await Staff.findByIdAndUpdate(req.staff.id, { photo: file.name });
+  //   res.status(200).json({
+  //     success: true,
+  //     data: file.name,
+  //   });
+  // });
+});

@@ -6,6 +6,7 @@ const {
   setStaffPassword,
   updateStaff,
   getManager,
+  uploadPhoto,
 } = require("../controllers/staff");
 const { authorize } = require("../middleware/auth");
 const advancedResults = require("../middleware/advancedResults");
@@ -23,5 +24,6 @@ router
 router.route("/:id").get(getStaff);
 router.route("/manager").get(protect, getManager);
 router.route("/password/:id").put(setStaffPassword);
+router.route("/upload").post(protect, uploadPhoto);
 
 module.exports = router;
