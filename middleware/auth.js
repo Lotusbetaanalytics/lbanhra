@@ -38,10 +38,10 @@ const Staff = require("../models/Staff");
 // Grant access to specific roles
 exports.authorize = (...roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.admin.role)) {
+    if (!roles.includes(req.staff.role)) {
       return next(
         new ErrorResponse(
-          `User role ${req.admin.role} is not authorized to access this route`,
+          `User role ${req.staff.role} is not authorized to access this route`,
           403
         )
       );
