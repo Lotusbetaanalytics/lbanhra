@@ -41,12 +41,24 @@ app.use(fileupload());
 
 //Set static folder
 //Set static folder
-app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/*", function (req, res, next) {
-  res.setHeader("Last-Modified", new Date().toUTCString());
-  next();
-});
+app.use(express.static(path.join(__dirname, "public")));
+// app.get("/*", function (req, res, next) {
+//   res.setHeader("Last-Modified", new Date().toUTCString());
+//   next();
+// });
+
+// if (process.env.NODE_ENV === "development") {
+//   app.use(express.static(path.join(__dirname, "public")));
+
+//   app.get("*", (req, res) =>
+//     res.sendFile(path.resolve(__dirname, "public", "index.html"))
+//   );
+// } else {
+//   app.get("/", (req, res) => {
+//     res.send("API is running....");
+//   });
+// }
 //Sanitize data
 app.use(mongoSanitize());
 
