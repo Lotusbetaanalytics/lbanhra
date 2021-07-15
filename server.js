@@ -42,14 +42,11 @@ app.use(fileupload());
 //Set static folder
 //Set static folder
 app.use(express.static(path.join(__dirname, "public")));
-// app.get("/*", function (req, res) {
-//   res.sendFile(path.join(__dirname, "public/index.html"), function (err) {
-//     if (err) {
-//       res.status(500).send(err);
-//     }
-//   });
-// });
 
+app.get("/*", function (req, res, next) {
+  res.setHeader("Last-Modified", new Date().toUTCString());
+  next();
+});
 //Sanitize data
 app.use(mongoSanitize());
 
