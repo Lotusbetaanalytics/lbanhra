@@ -7,6 +7,7 @@ const sendEmail = require("../utils/sendEmail");
 // @desc    Check if User is Registered
 // @route   POST/api/v1/auth/Student/login
 // @access   Public
+
 exports.addEmail = asyncHandler(async (req, res, next) => {
   const { email } = req.body;
 
@@ -70,6 +71,7 @@ exports.addEmail = asyncHandler(async (req, res, next) => {
 // @desc    Login User
 // @route   POST/api/v1/auth/Staff/login
 // @access   Public
+
 exports.verifyEmail = asyncHandler(async (req, res, next) => {
   const { email, code } = req.body;
 

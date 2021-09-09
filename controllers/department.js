@@ -5,6 +5,7 @@ const Department = require("../models/Department");
 // @desc    Create department/
 // @route   POST/api/v1/department
 // @access   Private/Student
+
 exports.createDepartment = asyncHandler(async (req, res, next) => {
   const department = await Department.create(req.body);
 
@@ -20,6 +21,7 @@ exports.createDepartment = asyncHandler(async (req, res, next) => {
 // @desc    get Department/
 // @route   GET/api/v1/department
 // @access   Private/Student
+
 exports.getDepartment = asyncHandler(async (req, res, next) => {
   res.status(200).json(res.advancedResults);
 });

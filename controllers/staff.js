@@ -21,6 +21,7 @@ exports.createStaff = asyncHandler(async (req, res, next) => {
 // @desc    Get Staffs/
 // @route   GET/api/v1/auth/Student/register
 // @access   Private/Admin/HR/MAnager
+
 exports.getStaffs = asyncHandler(async (req, res, next) => {
   res.status(200).json(res.advancedResults);
 });
@@ -28,6 +29,7 @@ exports.getStaffs = asyncHandler(async (req, res, next) => {
 // @desc    Get Staffs by id/
 // @route   GET/api/v1/staff/:id
 // @access   Private/Admin/HR/MAnager
+
 exports.getStaff = asyncHandler(async (req, res, next) => {
   const staff = await Staff.findById(req.params.id);
 
@@ -40,6 +42,7 @@ exports.getStaff = asyncHandler(async (req, res, next) => {
 // @desc    Get all MAnagers/
 // @route   GET/api/v1/staff/managers
 // @access   Private/
+
 exports.getManager = asyncHandler(async (req, res, next) => {
   const role = `Manager`;
   const staff = await Staff.findOne({ role: role });

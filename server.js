@@ -20,6 +20,7 @@ const auth = require("./routes/auth");
 const appraisal = require("./routes/appraisal");
 const department = require("./routes/department");
 const upload = require("./routes/upload");
+const initiative = require('./routes/initiative');
 
 //load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -88,6 +89,7 @@ app.use("/api/v1/department/", department);
 app.use("/api/v1/staff/login/", auth);
 app.use("/api/v1/staff/appraisal/sectiona/", appraisal);
 app.use("/api/v1/staff/upload", upload);
+app.use("/api/v1/staff/initiative", initiative);
 
 app.use(errorHandler);
 
