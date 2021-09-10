@@ -24,6 +24,6 @@ router
 router.route("/:id").get(getStaff);
 router.route("/manager").get(protect, getManager);
 router.route("/password/:id").put(setStaffPassword);
-router.route("/uploa").post(protect, uploadPhoto);
+router.route("/uploadPix").post(protect, uploadPhoto);
 
 module.exports = router;

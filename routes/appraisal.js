@@ -3,6 +3,7 @@ const {
   addSectionA,
   getAllSectionA,
   getSectionA,
+  addScore,
 } = require("../controllers/appraisal");
 const { protect } = require("../middleware/auth");
 const advancedResults = require("../middleware/advancedResults");
@@ -16,5 +17,6 @@ router
   .post(protect, addSectionA)
   .get(advancedResults(AppraisalA), getAllSectionA);
 router.route("/:id").get(getSectionA);
+router.route("/score").post(protect, addScore);
 
 module.exports = router;
