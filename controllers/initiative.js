@@ -3,7 +3,7 @@ const asyncHandler = require("../middleware/async");
 const Initiative = require("../models/Initiative");
 
 exports.addInitiative = asyncHandler(async (req, res, next) => {
-  req.body.user = req.staff.id;
+  // req.body.user = req.staff.id;
   const initiative = await Initiative.create(req.body);
 
   if (!initiative) {
@@ -17,7 +17,7 @@ exports.addInitiative = asyncHandler(async (req, res, next) => {
 
 exports.getInitiate = asyncHandler(async (req, res, next) => {
   const user_ = req.staff.id;
-  const initiative = await Initiative.find({ user: req.staff.id });
+  const initiative = await Initiative.find({ user: user_ });
   if (!initiative) {
     return res.status(400).json({
       success: false,

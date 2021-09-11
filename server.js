@@ -22,6 +22,8 @@ const department = require("./routes/department");
 const upload = require("./routes/upload");
 const test = require("./routes/test");
 const initiative = require("./routes/initiative");
+const start = require("./routes/start");
+const result = require("./routes/result");
 
 //load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -68,10 +70,12 @@ app.use(cors());
 app.use("/api/v1/staff/", staff);
 app.use("/api/v1/department/", department);
 app.use("/api/v1/staff/login/", auth);
+app.use("/api/v1/staff/appraisal/start", start);
 app.use("/api/v1/staff/appraisal/sectiona/", appraisal);
 app.use("/api/v1/staff/upload", upload);
 app.use("/api/v1/staff/test", test);
 app.use("/api/v1/staff/initiative", initiative);
+app.use("/api/v1/staff/score", result);
 
 app.use(errorHandler);
 

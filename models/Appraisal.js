@@ -1,27 +1,18 @@
 const mongoose = require("mongoose");
 
 const AppraisalSchema = new mongoose.Schema({
-  aid: {
-    type: mongoose.Schema.ObjectId,
-    ref: "AppraisalB",
-    required: true,
-  },
-  targets: {
+  session: {
     type: String,
-    required: [true, "Please add a perspective"],
+    required: [true, "Please add sesssion"],
   },
-  measures: {
+  quarter: {
     type: String,
-    required: [true, "Please add an objective"],
+    required: [true, "Please add  Quarter"],
   },
-  section: {
+  status: {
     type: String,
-    default: "B",
-  },
-  user: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Staff",
-    required: true,
+    required: [true, "Please add  status"],
+    default: "Started",
   },
   createdAt: {
     type: Date,

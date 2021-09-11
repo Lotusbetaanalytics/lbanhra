@@ -21,6 +21,10 @@ const InitiativeSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  session: {
+    type: String,
+    required: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

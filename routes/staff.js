@@ -19,7 +19,7 @@ const router = express.Router({ mergeParams: true });
 router
   .route("/")
   .post(createStaff)
-  .get(advancedResults(Staff), protect, authorize("Admin"), getStaffs)
+  .get(advancedResults(Staff), protect, authorize("Admin", "Staff"), getStaffs)
   .put(protect, updateStaff);
 router.route("/:id").get(getStaff);
 router.route("/manager").get(protect, getManager);
