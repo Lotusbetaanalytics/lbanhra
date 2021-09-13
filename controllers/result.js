@@ -24,23 +24,10 @@ exports.uploadScore = asyncHandler(async (req, res, next) => {
 exports.getScore = asyncHandler(async (req, res, next) => {
   req.body.user = req.staff.id;
   const score = await Score.find({ user: req.staff.id });
-  const total = await Score.aggregate([
-    {
-      user: req.staff.id,
-      $group: {
-        _id: null,
-        sum: {
-          $sum: {
-            $toInt: "$score",
-          },
-        },
-      },
-    },
-  ]);
-  console.log(total[0].sum);
+  const total = score.reduce((a, c) => a + c.score, 0);
   res.status(200).json({
     success: true,
-    data: score,
+    data: total,
   });
   //   const appraisal = await AppraisalResult.findOne({ user: req.staff.id });
 
