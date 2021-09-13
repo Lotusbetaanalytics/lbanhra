@@ -7,15 +7,32 @@ const Score = require("../models/Score");
 // @access   Private/ALL
 exports.uploadScore = asyncHandler(async (req, res, next) => {
   req.body.user = req.staff.id;
-  const appraisal = await AppraisalResult.create(req.body);
+  req.body.score = req.body.total;
+  const checkUser = await AppraisalResult.findOne({ user: req.staff.id });
+  if (checkUser !== null) {
+    const updateScore = await AppraisalResult.findByIdAndUpdate(
+      checkUser._id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.status(200).json({
+      success: true,
+      data: updateScore,
+    });
+  } else {
+    const appraisal = await AppraisalResult.create(req.body);
 
-  if (!appraisal) {
-    return next(new ErrorResponse("An Error Occured, Try Again", 400));
+    if (!appraisal) {
+      return next(new ErrorResponse("An Error Occured, Try Again", 400));
+    }
+    res.status(201).json({
+      success: true,
+      data: appraisal,
+    });
   }
-  res.status(201).json({
-    success: true,
-    data: appraisal,
-  });
 });
 
 // @desc    get Score/
@@ -25,9 +42,11 @@ exports.getScore = asyncHandler(async (req, res, next) => {
   req.body.user = req.staff.id;
   const score = await Score.find({ user: req.staff.id });
   const total = score.reduce((a, c) => a + c.score, 0);
+  const manager = score.reduce((a, c) => a + c.managerscore, 0);
   res.status(200).json({
     success: true,
     data: total,
+    manager,
   });
   //   const appraisal = await AppraisalResult.findOne({ user: req.staff.id });
 
