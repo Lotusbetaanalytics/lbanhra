@@ -58,3 +58,16 @@ exports.getScore = asyncHandler(async (req, res, next) => {
   //     data: appraisal,
   //   });
 });
+
+
+exports.fecthStaffScore = asyncHandler(async(req, res, next) => {
+  const staff_score = await Score.find({ user:req.params.id });
+  if(!staff_score){
+    return next(ErrorResponse(`An error occured`, 400));
+  } else {
+    return res.status(200).json({
+      success: true,
+      score: staff_score
+    })
+  }
+})
