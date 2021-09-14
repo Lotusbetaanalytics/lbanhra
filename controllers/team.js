@@ -14,3 +14,16 @@ exports.getmyTeam = asyncHandler(async (req, res, next) => {
     });
   }
 });
+
+
+exports.getTeamManaged = asyncHandler(async (req, res, next) => {
+    const managedStaff = await Staff.find({ manager: req.staff.id })
+    if (!managedStaff){
+        return next(ErrorResponse(`An error occured`, 400));
+    } else {
+        return res.status(200).json({
+            success: true,
+            data: managedStaff,
+        });
+    }
+});

@@ -11,7 +11,7 @@ const ScoreSchema = new mongoose.Schema({
     required: [true, "Please add Score"],
   },
   managerscore: {
-    type: String,
+    type: Number,
   },
   section: {
     type: String,
