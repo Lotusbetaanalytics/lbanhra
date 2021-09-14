@@ -24,7 +24,7 @@ const test = require("./routes/test");
 const initiative = require("./routes/initiative");
 const start = require("./routes/start");
 const result = require("./routes/result");
-const complaint = require("./routes/complaint")
+const complaint = require("./routes/complaint");
 const myteam = require("./routes/team");
 
 //load env vars
