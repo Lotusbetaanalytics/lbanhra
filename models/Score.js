@@ -3,8 +3,13 @@ const mongoose = require("mongoose");
 const ScoreSchema = new mongoose.Schema({
   question: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "AppraisalA",
     required: true,
+    refPath: "_qid",
+  },
+  _qid: {
+    type: String,
+    required: true,
+    enum: ["AppraisalA", "Initiative"],
   },
   score: {
     type: Number,
