@@ -43,7 +43,7 @@ const StaffSchema = new mongoose.Schema({
     type: String,
   },
   manager: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Staff",
   },
   code: {
