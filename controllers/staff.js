@@ -42,7 +42,7 @@ exports.getStaff = asyncHandler(async (req, res, next) => {
 // @access   Private/
 exports.getManager = asyncHandler(async (req, res, next) => {
   const role = `Manager`;
-  const staff = await Staff.findOne({ role: role });
+  const staff = await Staff.find({ role: role });
 
   res.status(200).json({
     success: true,
