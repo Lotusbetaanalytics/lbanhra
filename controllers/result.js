@@ -61,13 +61,15 @@ exports.getScore = asyncHandler(async (req, res, next) => {
 
 
 exports.fecthStaffScore = asyncHandler(async(req, res, next) => {
-  const staff_score = await Score.find({ user:req.params.id });
-  if(!staff_score){
-    return next(ErrorResponse(`An error occured`, 400));
+  console.log(req.params.staff_id);
+  const staff_score = await Score.find({ user:req.params.staff_id, session: req.params.session, quarter: req.params.quarter, section: req.params.section }).populate('question')
+  console.log(staff_score);
+  if(staff_score.length < 0) {
+    return next(new ErrorResponse(`An Error Occurred`, 400));
   } else {
     return res.status(200).json({
       success: true,
-      score: staff_score
-    })
+      data: staff_score
+    });
   }
-})
+});
