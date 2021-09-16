@@ -8,7 +8,7 @@ const sendEmail = require("../utils/sendEmail");
 // @route   POST/api/v1/auth/Student/login
 // @access   Public
 exports.addEmail = asyncHandler(async (req, res, next) => {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
   if (!email) {
     return next(new ErrorResponse("Please Provide a valid email address", 400));
@@ -28,22 +28,99 @@ exports.addEmail = asyncHandler(async (req, res, next) => {
         digits: true,
       });
       req.body.code = code;
+      const staff = await Staff.create(req.body);
+      if (!staff) {
+        res.status(400).json({
+          success: false,
+          message: error,
+        });
+      }
 
       const message = `Dear ${req.body.email}, Welcome to Lotus Beta Analytics, Enter you OTP in the app to verify your email address. Your OTP is ${code}`;
+
+      const html = `<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+          <td align="center">
+              <table class="col-600" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <tbody>
+                      <tr>
+                          <td align="center" valign="top" bgcolor="#640ad2"
+                              style="background:linear-gradient(0deg, rgba(100, 10, 210, 0.8), rgba(100, 10, 210, 0.8)),url(https://lbanstaffportal.herokuapp.com/static/media/tech.45a93050.jpg);background-size:cover; background-position:top;height:230">
+                              <table class="col-600" width="600" height="200" border="0" align="center"
+                                  cellpadding="0" cellspacing="0">
+                                  <tbody>
+                                      <tr>
+                                          <td align="center" style="line-height: 0px;">
+                                              <img style="display:block; line-height:0px; font-size:0px; border:0px;"
+                                                  src="https://lbanstaffportal.herokuapp.com/static/media/logo.49e95c77.png"
+                                                  width="70" height="70" alt="logo">
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td align="center"
+                                              style="font-family: 'Raleway', sans-serif; font-size:37px; color:#ffffff;font-weight: bold;">
+                                              Lotus Beta Analytics
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td align="center"
+                                              style="font-family: 'Lato', sans-serif; font-size:15px; color:#ffffff;font-weight: 300;">
+                                              Our goal as an organization is to provide our customers with the best
+                                              value
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </td>
+      </tr>
+      <tr>
+          <td align="center">
+              <table class="col-600" width="600" border="0" align="center" cellpadding="0" cellspacing="0"
+                  style="margin-left:20px; margin-right:20px; border-left: 1px solid #dbd9d9; border-right: 1px solid #dbd9d9;">
+                  <tbody>
+                      <tr>
+                          <td height="35"></td>
+                      </tr>
+
+                      <tr>
+                          <td align="center"
+                              style="font-family: 'Raleway', sans-serif; font-size:22px; font-weight: bold; color:#2a3a4b;">
+                              Welcome to Lotus Beta Analytics 
+                          </td>
+                      </tr>
+
+                      <tr>
+                          <td height="10"></td>
+                      </tr>
+
+
+                      <tr>
+                          <td align="center"
+                              style="font-family: 'Lato', sans-serif; font-size:14px; color:#757575; line-height:24px; font-weight: 300;">
+                             
+                              <a href="https://lbanstaffportal.herokuapp.com/email-verification/${staff._id}/${code}" target="_blank" style="background:yellow;color:black;padding:10px;border-radius:30px">Click on this Link to Activate your account</a>
+                          </td>
+                      </tr>
+
+                  </tbody>
+              </table>
+          </td>
+      </tr>
+  </tbody>
+</table>`;
 
       try {
         await sendEmail({
           email: req.body.email,
           subject: "Staff Portal",
-          message,
+          html,
         });
-        const staff = await Staff.create(req.body);
-        if (!staff) {
-          res.status(400).json({
-            success: false,
-            message: error,
-          });
-        }
+
         res.status(201).json({
           success: false,
           staff,
@@ -71,19 +148,12 @@ exports.addEmail = asyncHandler(async (req, res, next) => {
 // @route   POST/api/v1/auth/Staff/login
 // @access   Public
 exports.verifyEmail = asyncHandler(async (req, res, next) => {
-  const { email, code } = req.body;
-
-  //validate email & password
-  if (!email || !code) {
-    return next(new ErrorResponse("Access Code cannot be empty", 400));
-  }
+  const { id, code } = req.body;
   //check for user
-  const staff = await Staff.findOne({ email: email });
-
+  const staff = await Staff.findById(id);
   if (!staff) {
     return next(new ErrorResponse("Invalid credentials", 401));
   }
-
   //check if otp match
   const dbCode = staff.code;
 
