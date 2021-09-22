@@ -1,5 +1,12 @@
 const express = require("express");
-const { addEmail, login, getMe, verifyEmail } = require("../controllers/auth");
+const {
+  addEmail,
+  login,
+  getMe,
+  verifyEmail,
+  forgotPassword,
+  resetPassword,
+} = require("../controllers/auth");
 const { protect } = require("../middleware/auth");
 const advancedResults = require("../middleware/advancedResults");
 const Staff = require("../models/Staff");
@@ -11,5 +18,7 @@ router.route("/").post(login);
 router.route("/addEmail").post(addEmail);
 router.route("/verifyEmail").post(verifyEmail);
 router.route("/me").get(protect, getMe);
+router.route("/forgotPassword").post(forgotPassword);
+router.route("/resetPassword").post(resetPassword);
 
 module.exports = router;

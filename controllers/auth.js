@@ -245,7 +245,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   //get hashed token
   const resetPasswordToken = crypto
     .createHash("sha256")
-    .update(req.params.resettoken)
+    .update(req.body.id)
     .digest("hex");
   const user = await Staff.findOne({
     resetPasswordToken,
@@ -280,31 +280,101 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   //Create reset url
   const resetUrl = `${req.protocol}://${req.get(
     "host"
-  )}/api/v1/auth/resetpassword/${resetToken}`;
+  )}/resetPassword/${resetToken}`;
 
-  const message = `You are receiving this email because you (or someone else) has requested
-the reset of a password, Please make a PUT request to \n\n ${resetUrl}`;
+  const html = `<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+<tbody>
+    <tr>
+        <td align="center">
+            <table class="col-600" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td align="center" valign="top" bgcolor="#640ad2"
+                            style="background:linear-gradient(0deg, rgba(100, 10, 210, 0.8), rgba(100, 10, 210, 0.8)),url(https://lbanstaffportal.herokuapp.com/static/media/tech.45a93050.jpg);background-size:cover; background-position:top;height:230">
+                            <table class="col-600" width="600" height="200" border="0" align="center"
+                                cellpadding="0" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <td align="center" style="line-height: 0px;">
+                                            <img style="display:block; line-height:0px; font-size:0px; border:0px;"
+                                                src="https://lbanstaffportal.herokuapp.com/static/media/logo.49e95c77.png"
+                                                width="70" height="70" alt="logo">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center"
+                                            style="font-family: 'Raleway', sans-serif; font-size:37px; color:#ffffff;font-weight: bold;">
+                                            Lotus Beta Analytics
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center"
+                                            style="font-family: 'Lato', sans-serif; font-size:15px; color:#ffffff;font-weight: 300;">
+                                            Our goal as an organization is to provide our customers with the best
+                                            value
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="center">
+            <table class="col-600" width="600" border="0" align="center" cellpadding="0" cellspacing="0"
+                style="margin-left:20px; margin-right:20px; border-left: 1px solid #dbd9d9; border-right: 1px solid #dbd9d9;">
+                <tbody>
+                    <tr>
+                        <td height="35"></td>
+                    </tr>
+
+                    <tr>
+                        <td align="center"
+                            style="font-family: 'Raleway', sans-serif; font-size:22px; font-weight: bold; color:#2a3a4b;">
+                           Hello There!
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td height="10"></td>
+                    </tr>
+
+
+                    <tr>
+                        <td align="center"
+                            style="font-family: 'Lato', sans-serif; font-size:14px; color:#757575; line-height:24px; font-weight: 300;">
+                            You are receiving this email because you (or someone else) has requested
+                            the reset of a password, Click on the link below to reset your password 
+                            <br />
+                            <br />
+                            <a href="${resetUrl}" style="padding:1rem;color:white;background:green;border-radius:20px;">Click Here</a>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>`;
 
   try {
     await sendEmail({
       email: user.email,
       subject: "Password reset token",
-      message,
+      html,
     });
     res.status(200).json({ success: true, data: "Email Sent" });
   } catch (err) {
     console.log(err);
     user.getResetPasswordToken = undefined;
     user.resetPasswordTokenExpire = undefined;
-
     await user.save({ validateBeforeSave: false });
     return next(new ErrorResponse("Email could not be sent", 500));
   }
-
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
 });
 
 //Get token from model, create cookie and send response
