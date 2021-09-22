@@ -2,11 +2,17 @@ const mongoose = require("mongoose");
 
 const AppraisalResultSchema = new mongoose.Schema({
   score: {
-    type: String,
+    type: Number,
     required: [true, "Please add Score"],
   },
   managerscore: {
-    type: String,
+    type: Number,
+  },
+  overall: {
+    type: Number,
+  },
+  hr: {
+    type: Number,
   },
   session: {
     type: String,

@@ -8,7 +8,11 @@ const Score = require("../models/Score");
 exports.uploadScore = asyncHandler(async (req, res, next) => {
   req.body.user = req.staff.id;
   req.body.score = req.body.total;
-  const checkUser = await AppraisalResult.findOne({ user: req.staff.id });
+  const checkUser = await AppraisalResult.findOne({
+    user: req.staff.id,
+    session: req.body.session,
+    quarter: req.body.quarter,
+  });
   if (checkUser !== null) {
     const updateScore = await AppraisalResult.findByIdAndUpdate(
       checkUser._id,
@@ -59,32 +63,35 @@ exports.getScore = asyncHandler(async (req, res, next) => {
   //   });
 });
 
-
-exports.fecthStaffScore = asyncHandler(async(req, res, next) => {
-  const staff_score = await Score.find({ user:req.params.staff_id, session: req.params.session, quarter: req.params.quarter, section: req.params.section }).populate('question')
-  if(staff_score.length < 0) {
+exports.fecthStaffScore = asyncHandler(async (req, res, next) => {
+  const staff_score = await Score.find({
+    user: req.params.staff_id,
+    session: req.params.session,
+    quarter: req.params.quarter,
+    section: req.params.section,
+  }).populate("question");
+  if (staff_score.length < 0) {
     return next(new ErrorResponse(`An Error Occurred`, 400));
   } else {
     return res.status(200).json({
       success: true,
-      data: staff_score
+      data: staff_score,
     });
   }
 });
 
-
-exports.setStaffManagerScore = asyncHandler( async(req, res, next) => {
+exports.setStaffManagerScore = asyncHandler(async (req, res, next) => {
   const manager_score = await Score.findByIdAndUpdate(req.body.id, req.body, {
     new: true,
     runValidators: true,
   });
 
-  if(!manager_score){
+  if (!manager_score) {
     return next(new ErrorResponse(`An error occured`, 400));
   } else {
     return res.status(200).json({
       success: true,
-      message: manager_score
+      message: manager_score,
     });
   }
 });
