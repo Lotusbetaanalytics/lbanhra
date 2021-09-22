@@ -34,8 +34,7 @@ exports.suggestionForm = asyncHandler(async (req, res, next) => {
   const user = await Staff.findById(req.staff.id);
   const user_name = user.firstname + " " + user.lastname;
   req.body.user = req.staff.id;
-  const message = `Dear Team, ${user_name} just filled the suggestion form, \n\n Name: ${user_name}
-    \n\n Email: ${req.staff.email}\n\n Message: ${req.body.message}`;
+
   const html = `<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
   <tbody>
       <tr>

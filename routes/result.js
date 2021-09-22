@@ -4,6 +4,7 @@ const {
   uploadScore,
   fecthStaffScore,
   setStaffManagerScore,
+  notifyManager,
 } = require("../controllers/result");
 const { protect, authorize } = require("../middleware/auth");
 const advancedResults = require("../middleware/advancedResults");
@@ -27,5 +28,6 @@ router
 router
   .route("/manager")
   .put(protect, authorize("Manager"), setStaffManagerScore);
+router.route("/notify/manager").post(protect, notifyManager);
 
 module.exports = router;

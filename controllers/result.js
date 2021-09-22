@@ -2,6 +2,8 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const AppraisalResult = require("../models/AppraisalResult");
 const Score = require("../models/Score");
+const Staff = require("../models/Staff");
+const sendEmail = require("../utils/sendEmail");
 // @desc    upload Score/
 // @route   POST/api/v1/staff/score
 // @access   Private/ALL
@@ -36,6 +38,125 @@ exports.uploadScore = asyncHandler(async (req, res, next) => {
       success: true,
       data: appraisal,
     });
+  }
+});
+
+// @desc    upload Score/
+// @route   POST/api/v1/staff/score
+// @access   Private/ALL
+exports.notifyManager = asyncHandler(async (req, res, next) => {
+  req.body.user = req.staff.id;
+  req.body.score = req.body.total;
+  req.body.status = "Awaiting Manager";
+  const user = await Staff.findById(req.staff.id).populate({
+    path: "manager",
+    select: "email firstname",
+  });
+  const managerName = user.manager.name;
+  const managerMail = user.manager.email;
+  const checkUser = await AppraisalResult.findOne({
+    user: req.staff.id,
+    session: req.body.session,
+    quarter: req.body.quarter,
+  });
+  await AppraisalResult.findByIdAndUpdate(checkUser._id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  // Send Email
+  const html = `<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+          <td align="center">
+              <table class="col-600" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+                  <tbody>
+                      <tr>
+                          <td align="center" valign="top" bgcolor="#640ad2"
+                              style="background:linear-gradient(0deg, rgba(100, 10, 210, 0.8), rgba(100, 10, 210, 0.8)),url(https://lbanstaffportal.herokuapp.com/static/media/tech.45a93050.jpg);background-size:cover; background-position:top;height:230">
+                              <table class="col-600" width="600" height="200" border="0" align="center"
+                                  cellpadding="0" cellspacing="0">
+                                  <tbody>
+                                      <tr>
+                                          <td align="center" style="line-height: 0px;">
+                                              <img style="display:block; line-height:0px; font-size:0px; border:0px;"
+                                                  src="https://lbanstaffportal.herokuapp.com/static/media/logo.49e95c77.png"
+                                                  width="70" height="70" alt="logo">
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td align="center"
+                                              style="font-family: 'Raleway', sans-serif; font-size:37px; color:#ffffff;font-weight: bold;">
+                                              Lotus Beta Analytics
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td align="center"
+                                              style="font-family: 'Lato', sans-serif; font-size:15px; color:#ffffff;font-weight: 300;">
+                                              Our goal as an organization is to provide our customers with the best
+                                              value
+                                          </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </td>
+      </tr>
+      <tr>
+          <td align="center">
+              <table class="col-600" width="600" border="0" align="center" cellpadding="0" cellspacing="0"
+                  style="margin-left:20px; margin-right:20px; border-left: 1px solid #dbd9d9; border-right: 1px solid #dbd9d9;">
+                  <tbody>
+                      <tr>
+                          <td height="35"></td>
+                      </tr>
+
+                      <tr>
+                          <td align="center"
+                              style="font-family: 'Raleway', sans-serif; font-size:22px; font-weight: bold; color:#2a3a4b;">
+                              Dear ${managerName}, 
+                          </td>
+                      </tr>
+
+                      <tr>
+                          <td height="10"></td>
+                      </tr>
+
+
+                      <tr>
+                          <td align="center"
+                              style="font-family: 'Lato', sans-serif; font-size:14px; color:#757575; line-height:24px; font-weight: 300;">
+                              ${
+                                user.firstname + " " + user.lastname
+                              } who is a member of your team has completed his/her appraisal.
+                              Proceed to the staff portal to evaluate his/her performance
+                          </td>
+                      </tr>
+
+                  </tbody>
+              </table>
+          </td>
+      </tr>
+  </tbody>
+</table>`;
+
+  try {
+    await sendEmail({
+      email: `${managerMail}`,
+      subject: "LBAN KPI",
+      cc: `obafemi@lotusbetaanalytics.com, ${user.email}`,
+      html: html,
+    });
+    res.status(200).json({
+      success: true,
+      data: "Message Sent",
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new ErrorResponse("Message could not be sent", 500));
   }
 });
 
