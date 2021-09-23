@@ -52,7 +52,7 @@ exports.notifyManager = asyncHandler(async (req, res, next) => {
     path: "manager",
     select: "email firstname",
   });
-  const managerName = user.manager.name;
+  const managerName = user.manager.firstname;
   const managerMail = user.manager.email;
   const checkUser = await AppraisalResult.findOne({
     user: req.staff.id,
