@@ -1,6 +1,7 @@
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const AppraisalResult = require("../models/AppraisalResult");
+const Appraisal = require("../models/Appraisal");
 const Score = require("../models/Score");
 const Staff = require("../models/Staff");
 const sendEmail = require("../utils/sendEmail");
@@ -217,4 +218,17 @@ exports.setStaffManagerScore = asyncHandler(async (req, res, next) => {
       message: manager_score,
     });
   }
+});
+
+exports.checkStatus = asyncHandler(async (req, res, next) => {
+  const appraisal = await Appraisal.findOne({ status: "Started" });
+  const status = await AppraisalResult.findOne({
+    user: req.staff.id,
+    quarter: appraisal.quarter,
+    session: appraisal.session,
+  });
+  return res.status(200).json({
+    success: true,
+    data: status,
+  });
 });
