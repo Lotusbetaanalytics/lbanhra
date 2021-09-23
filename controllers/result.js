@@ -133,6 +133,8 @@ exports.notifyManager = asyncHandler(async (req, res, next) => {
                                 user.firstname + " " + user.lastname
                               } who is a member of your team has completed his/her appraisal.
                               Proceed to the staff portal to evaluate his/her performance
+
+                              <h2>Score: ${req.body.total}</h2>
                           </td>
                       </tr>
 
@@ -147,7 +149,7 @@ exports.notifyManager = asyncHandler(async (req, res, next) => {
     await sendEmail({
       email: `${managerMail}`,
       subject: "LBAN KPI",
-      cc: `obafemi@lotusbetaanalytics.com, ${user.email}`,
+      cc: `oluwatobiloba@lotusbetaanalytics.com, ${user.email}`,
       html: html,
     });
     res.status(200).json({
