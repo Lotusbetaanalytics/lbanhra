@@ -119,6 +119,7 @@ exports.addScore = asyncHandler(async (req, res, next) => {
     question: req.body.question,
     session: req.body.session,
     quarter: req.body.quarter,
+    user: req.staff.id,
   });
   if (score.length > 0) {
     const updateScore = await Score.findByIdAndUpdate(score[0]._id, req.body, {
