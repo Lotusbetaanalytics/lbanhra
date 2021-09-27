@@ -384,7 +384,7 @@ exports.notifyHR = asyncHandler(async (req, res, next) => {
   try {
     await sendEmail({
       // email: `${managerMail}`,
-      email: `obafemi@lotutsbetaanalytics.com`,
+      email: `obafemi@lotusbetaanalytics.com`,
       subject: "LBAN KPI",
       // cc: `oluwatobiloba@lotusbetaanalytics.com, ${user.email}`,
       html: html,
