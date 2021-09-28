@@ -18,7 +18,7 @@ exports.appraisal = asyncHandler(async (req, res, next) => {
 exports.getCurrentScores = asyncHandler(async (req, res, next) => {
   const appraisal = await Appraisal.findOne({ status: "Started" });
   const scores = await AppraisalResult.findOne({
-    session: req.params.session,
+    session: appraisal.session,
     user: req.staff.id,
     quarter: appraisal.quarter,
   });
@@ -33,30 +33,31 @@ exports.getCurrentScores = asyncHandler(async (req, res, next) => {
 });
 
 exports.getScores = asyncHandler(async (req, res, next) => {
+  const appraisal = await Appraisal.findOne({ status: "Started" });
   const firstQuarter = await AppraisalResult.findOne({
-    session: req.params.session,
+    session: appraisal.session,
     user: req.staff.id,
     quarter: "First Quarter",
   });
   const secondQuarter = await AppraisalResult.findOne({
-    session: req.params.session,
+    session: appraisal.session,
     user: req.staff.id,
     quarter: "Second Quarter",
   });
   const thirdQuarter = await AppraisalResult.findOne({
-    session: req.params.session,
+    session: appraisal.session,
     user: req.staff.id,
     quarter: "Third Quarter",
   });
   const fourthQuarter = await AppraisalResult.findOne({
-    session: req.params.session,
+    session: appraisal.session,
     user: req.staff.id,
     quarter: "Fourth Quarter",
   });
-  const first = firstQuarter && firstQuarter.score;
-  const second = secondQuarter && secondQuarter.score;
-  const third = thirdQuarter && thirdQuarter.score;
-  const fourth = fourthQuarter && fourthQuarter.score;
+  const first = firstQuarter && firstQuarter.overall;
+  const second = secondQuarter && secondQuarter.overall;
+  const third = thirdQuarter && thirdQuarter.overall;
+  const fourth = fourthQuarter && fourthQuarter.overall;
 
   return res.status(200).json({
     success: true,
@@ -64,5 +65,14 @@ exports.getScores = asyncHandler(async (req, res, next) => {
     secondQuarter: second,
     thirdQuarter: third,
     fourthQuarter: fourth,
+  });
+});
+
+exports.devTeam = asyncHandler(async (req, res, next) => {
+  const appraisal = await AppraisalResult.create(req.body);
+
+  return res.status(200).json({
+    success: true,
+    data: appraisal,
   });
 });

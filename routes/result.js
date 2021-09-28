@@ -16,6 +16,7 @@ const {
   appraisal,
   getScores,
   getCurrentScores,
+  devTeam,
 } = require("../controllers/apparisalResult");
 
 const router = express.Router({ mergeParams: true });
@@ -37,5 +38,6 @@ router.route("/notify/manager").post(protect, notifyManager);
 router.route("/notify/hr").post(protect, notifyHR);
 router.route("/status").get(protect, checkStatus);
 router.route("/manager/score").put(protect, managerScore);
+router.route("/dev").post(devTeam);
 
 module.exports = router;

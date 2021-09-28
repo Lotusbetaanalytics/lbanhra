@@ -294,6 +294,7 @@ exports.notifyHR = asyncHandler(async (req, res, next) => {
   const total = checkUser.score;
   const cal = total + req.body.total;
   const overall = cal / 2;
+  req.body.overall = overall;
   await AppraisalResult.findByIdAndUpdate(checkUser._id, req.body, {
     new: true,
     runValidators: true,
