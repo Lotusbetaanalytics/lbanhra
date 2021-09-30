@@ -27,6 +27,7 @@ const result = require("./routes/result");
 const complaint = require("./routes/complaint");
 const myteam = require("./routes/team");
 const kpi = require("./routes/kpi");
+const exit = require("./routes/exitInterview");
 
 //load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -86,6 +87,7 @@ app.use("/api/v1/staff/score", result);
 app.use("/api/v1/staff/forms", complaint);
 app.use("/api/v1/staff/myteam", myteam);
 app.use("/api/v1/staff/kpi", kpi);
+app.use("/api/v1/staff/exit", exit);
 
 app.use(errorHandler);
 
