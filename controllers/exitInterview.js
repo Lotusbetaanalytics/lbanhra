@@ -7,14 +7,18 @@ const Staff = require("../models/Staff");
 
 
 exports.startInterview = asyncHandler(async(req, res, next) => {
+    const check = await Exit.find({ user: req.staff.id });
+    if (check){
+        return next(new ErrorResponse("User already did exit interview"));
+    }
+
     const user = await Staff.findById(req.staff.id).populate({path: 'manager', select: 'email'});
-    console.log(user);
     const user_name = req.staff.firstname + " " + req.staff.lastname;
     req.body.user = user._id;
     const exitResponse = await Exit.create(req.body);
 
     if(!exitResponse){
-        return next(new ErrorResponse("An error occured!"))
+        return next(new ErrorResponse("An error occured!"));
     }
 
     const html = `<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -90,14 +94,54 @@ exports.startInterview = asyncHandler(async(req, res, next) => {
           subject: "Exit Interview",
           cc: `${ req.staff.manager.email }, ${ req.staff.email }`,
           html: html,
-        })
+        });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         return next(new ErrorResponse("Message could not be sent", 500));
     }
 
     res.status(201).json({
         success: true,
         message: "The HR has been notified"
-    })
+    });
+});
+
+
+exports.getUserInterview = asyncHandler( async(req, res, next) => {
+    const interview = await Exit.find({ user: req.params.staff_id });
+    if (!interview){
+        return next(new ErrorResponse("No exit interviews by user"));
+    } else {
+        res.status(200).json({
+            success: true,
+            data: interview
+        });
+    }
+});
+
+
+
+exports.getPendingInterview = asyncHandler( async(req, res, next) => {
+    const pending = await Exit.find({ status: "Pending" });
+    if(!pending){
+        return next(new ErrorResponse("An error occured"));
+    } else {
+        res.status(200).json({
+            succes: true,
+            data: pending
+        });
+    }
+});
+
+
+exports.getAllInterview = asyncHandler( async(req, res, next) => {
+    const interviews = await Exit.find();
+    if (!interviews){
+        return next(new ErrorResponse("No exit interviews"));
+    } else {
+        res.status(200).json({
+            success: true,
+            data: interviews
+        });
+    }
 });
