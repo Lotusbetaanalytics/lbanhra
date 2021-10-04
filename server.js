@@ -18,6 +18,7 @@ const connectDB = require("./config/db");
 const staff = require("./routes/staff");
 const auth = require("./routes/auth");
 const appraisal = require("./routes/appraisal");
+const leave = require("./routes/leave");
 const department = require("./routes/department");
 const upload = require("./routes/upload");
 const test = require("./routes/test");
@@ -86,7 +87,7 @@ app.use("/api/v1/staff/score", result);
 app.use("/api/v1/staff/forms", complaint);
 app.use("/api/v1/staff/myteam", myteam);
 app.use("/api/v1/staff/kpi", kpi);
-
+app.use("/api/v1/staff/leave", leave);
 app.use(errorHandler);
 
 //Set static folder
