@@ -17,10 +17,19 @@ const LeaveSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    manager: {
+        type: mongoose.Schema.ObjectId,
+        required: true
+    },
     reason: {
         type: String,
         required: true
     },
+    status: {
+        type: String,
+        enum: ["Pending", "Approved", "Rejected"],
+        default: "Pendng"
+    }
 });
 
 module.exports = mongoose.model("Leave", LeaveSchema);
