@@ -6,20 +6,9 @@ const { populate } = require("../models/Complaints");
 const Staff = require("../models/Staff");
 
 
-// exports.leave = asyncHandler(async (req, res, next) => {
-//   req.body.user = req.staff.id  
-//   console.log(req.staff)
-//   const result = await Leave.create(req.body);
-//   if (!result) {
-//     return next(new ErrorResponse(`An error occured`, 400));
-//   } // else {
-//     return res.status(200).json({
-//       success: true,
-//       data: result,
-//     });
-// });
-
-
+// @desc    Create A Leave Request
+// @route   POST /api/v1/staff/leave/
+// @access   Private/ALL
 exports.leaveRequest = asyncHandler(async(req, res, next) => {
   const current_request = await Leave.findOne({ user: req.staff.id });
   const user = await Staff.findById(req.staff.id).populate({path: 'manager', select: 'email'});
@@ -134,4 +123,104 @@ exports.leaveRequest = asyncHandler(async(req, res, next) => {
       
     }
   }
+});
+
+// @desc    Get All Leave Requests For Current User
+// @route   GET /api/v1/staff/leave/get
+// @access   Private/ALL
+exports.getUserLeaveRequests = asyncHandler(async (req, res, next) => {
+  const leave = Leave.find({user: req.staff.id})
+  console.log(req.params)
+
+  if (!leave) {
+    return new ErrorResponse(
+      "No leave request found",
+      404
+    )
+  }
+
+  res.status(200).json({
+    sucess: true,
+    data: leave
+  })
+});
+
+// @desc    Get A Leave Request Using ID
+// @route   GET /api/v1/staff/leave/:leave_id
+// @access   Private/HR
+exports.getStaffLeaveRequest = asyncHandler(async (req, res, next) => {
+    const leave = Leave.findById(req.params.id);
+
+    if (!leave) {
+      return new ErrorResponse(
+        "An error occured",
+        404
+      )
+    }
+
+    res.status(200).json({
+        success: true,
+        data: leave,
+    });
+});
+
+// @desc    Get All Leave Requests
+// @route   GET /api/v1/staff/leave/all
+// @access   Private/ALL
+exports.getAllLeaveRequests = asyncHandler(async (req, res, next) => {
+  const leave = Leave.find();
+
+  if (!leave) {
+    return new ErrorResponse("An error occured", 404)
+  };
+  res.status(200).json({
+      success: true,
+      data: leave,
+  });
+});
+
+// @desc    Get A Leave Request Using ID
+// @route   GET /api/v1/staff/leave/team/:leave_id
+// @access   Private/Manager
+exports.getTeamLeaveRequest = asyncHandler(async (req, res, next) => {
+  const leave = Leave.findById(req.params.id);
+
+  if (!leave) {
+    return new ErrorResponse("An error occured", 404)
+  };
+  res.status(200).json({
+      success: true,
+      data: leave,
+  });
+});
+
+// @desc    Update A Leave Request Using ID
+// @route   GETT/api/v1/staff/leave/update/:leave_id
+// @access   Private/HR
+exports.updateLeaveRequest = asyncHandler(async (req, res, next) => {
+  const leave = await Leave.findById(req.params.leave_id);
+  // console.log(req.params);
+
+  if (!leave) {
+    return new ErrorResponse("An error occured", 404)
+  };
+
+  if (req.body.status === "Approved" || req.body.status === "Rejeted") {
+    return next(
+      new ErrorResponse("Your Leave request has been completed previously.", 400)
+    );
+  };
+  
+  const updateLeave = await Leave.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  res.status(200).json({
+    success: true,
+    data: updateLeave,
+  });
 });

@@ -17,6 +17,12 @@ const LeaveSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    totalDays: {
+        type: String,
+    },
+    remaininigDays: {
+        type: String,
+    },
     manager: {
         type: mongoose.Schema.ObjectId,
         required: true
@@ -24,6 +30,9 @@ const LeaveSchema = mongoose.Schema({
     reason: {
         type: String,
         required: true
+    },
+    comment: {
+        type: String,
     },
     status: {
         type: String,
