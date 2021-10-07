@@ -129,8 +129,7 @@ exports.leaveRequest = asyncHandler(async(req, res, next) => {
 // @route   GET /api/v1/staff/leave/get
 // @access   Private/ALL
 exports.getUserLeaveRequests = asyncHandler(async (req, res, next) => {
-  const leave = Leave.find({user: req.staff.id})
-  console.log(req.params)
+  const leave = await Leave.find({user: req.staff.id})
 
   if (!leave) {
     return new ErrorResponse(
@@ -149,7 +148,7 @@ exports.getUserLeaveRequests = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/staff/leave/:leave_id
 // @access   Private/HR
 exports.getStaffLeaveRequest = asyncHandler(async (req, res, next) => {
-    const leave = Leave.findById(req.params.id);
+    const leave = await Leave.findById(req.params.leave_id);
 
     if (!leave) {
       return new ErrorResponse(
@@ -168,8 +167,8 @@ exports.getStaffLeaveRequest = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/staff/leave/all
 // @access   Private/ALL
 exports.getAllLeaveRequests = asyncHandler(async (req, res, next) => {
-  const leave = Leave.find();
-
+  const leave = await Leave.find({});
+  console.log(leave)
   if (!leave) {
     return new ErrorResponse("An error occured", 404)
   };
@@ -183,7 +182,7 @@ exports.getAllLeaveRequests = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/staff/leave/team/:leave_id
 // @access   Private/Manager
 exports.getTeamLeaveRequest = asyncHandler(async (req, res, next) => {
-  const leave = Leave.findById(req.params.id);
+  const leave = await Leave.findById(req.params.leave_id);
 
   if (!leave) {
     return new ErrorResponse("An error occured", 404)
@@ -212,7 +211,7 @@ exports.updateLeaveRequest = asyncHandler(async (req, res, next) => {
   };
   
   const updateLeave = await Leave.findByIdAndUpdate(
-    req.params.id,
+    req.params.leave_id,
     req.body,
     {
       new: true,
