@@ -129,13 +129,13 @@ exports.leaveRequest = asyncHandler(async(req, res, next) => {
 // @route   GET /api/v1/staff/leave/get
 // @access   Private/ALL
 exports.getUserLeaveRequests = asyncHandler(async (req, res, next) => {
-  const leave = await Leave.find({user: req.staff.id})
+  const leave = await Leave.find({ user: req.staff.id })
 
   if (!leave) {
-    return new ErrorResponse(
+    return next(new ErrorResponse(
       "No leave request found",
       404
-    )
+    ));
   }
 
   res.status(200).json({
@@ -151,10 +151,10 @@ exports.getStaffLeaveRequest = asyncHandler(async (req, res, next) => {
     const leave = await Leave.findById(req.params.leave_id);
 
     if (!leave) {
-      return new ErrorResponse(
+      return next(new ErrorResponse(
         "An error occured",
         404
-      )
+      ));
     }
 
     res.status(200).json({
@@ -165,12 +165,11 @@ exports.getStaffLeaveRequest = asyncHandler(async (req, res, next) => {
 
 // @desc    Get All Leave Requests
 // @route   GET /api/v1/staff/leave/all
-// @access   Private/ALL
+// @access   Private/HR
 exports.getAllLeaveRequests = asyncHandler(async (req, res, next) => {
-  const leave = await Leave.find({});
-  console.log(leave)
+  const leave = await Leave.find();
   if (!leave) {
-    return new ErrorResponse("An error occured", 404)
+    return next(new ErrorResponse("An error occured", 404));
   };
   res.status(200).json({
       success: true,
@@ -181,11 +180,11 @@ exports.getAllLeaveRequests = asyncHandler(async (req, res, next) => {
 // @desc    Get A Leave Request Using ID
 // @route   GET /api/v1/staff/leave/team/:leave_id
 // @access   Private/Manager
-exports.getTeamLeaveRequest = asyncHandler(async (req, res, next) => {
+exports.getTeamMemberLeaveRequest = asyncHandler(async (req, res, next) => {
   const leave = await Leave.findById(req.params.leave_id);
 
   if (!leave) {
-    return new ErrorResponse("An error occured", 404)
+    return next(new ErrorResponse("An error occured", 404));
   };
   res.status(200).json({
       success: true,
@@ -201,14 +200,14 @@ exports.updateLeaveRequest = asyncHandler(async (req, res, next) => {
   // console.log(req.params);
 
   if (!leave) {
-    return new ErrorResponse("An error occured", 404)
+    return next(new ErrorResponse("An error occured", 404));
   };
 
-  if (req.body.status === "Approved" || req.body.status === "Rejeted") {
-    return next(
-      new ErrorResponse("Your Leave request has been completed previously.", 400)
-    );
-  };
+//   if (req.body.status === "Approved" || req.body.status === "Rejeted") {
+//     return next(
+//       new ErrorResponse("Your Leave request has been completed previously.", 400)
+//     );
+//   };
   
   const updateLeave = await Leave.findByIdAndUpdate(
     req.params.leave_id,
@@ -218,7 +217,7 @@ exports.updateLeaveRequest = asyncHandler(async (req, res, next) => {
       runValidators: true,
     }
   );
-  res.status(200).json({
+  res.status(201).json({
     success: true,
     data: updateLeave,
   });
