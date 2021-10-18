@@ -3,7 +3,7 @@ const asyncHandler = require("../middleware/async");
 const Initiative = require("../models/Initiative");
 
 exports.addInitiative = asyncHandler(async (req, res, next) => {
-  // req.body.user = req.staff.id;
+  req.body.user = req.staff.id;
   const initiative = await Initiative.create(req.body);
 
   if (!initiative) {

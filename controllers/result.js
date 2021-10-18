@@ -369,8 +369,8 @@ exports.notifyHR = asyncHandler(async (req, res, next) => {
     user.firstname + " " + user.lastname
   }  appraisal.
                               Proceed to the staff portal for calibration
-                              <h2>Staff Score: ${req.body.total}</h2>
-                              <h2>Manager's Score: ${total}</h2>
+                              <h2>Staff Score: ${total}</h2>
+                              <h2>Manager's Score: ${req.body.total}</h2>
                              <h1>Overall Score: ${overall}</h1>
                           </td>
                       </tr>
