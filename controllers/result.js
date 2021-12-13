@@ -168,7 +168,11 @@ exports.notifyManager = asyncHandler(async (req, res, next) => {
 // @access   Private/ALL
 exports.getScore = asyncHandler(async (req, res, next) => {
   req.body.user = req.staff.id;
-  const score = await Score.find({ user: req.staff.id });
+  const appraisal = await Appraisal.findOne({ status: "Started" });
+  const score = await Score.find({
+    user: req.staff.id,
+    quarter: appraisal.quarter,
+  });
   const total = score.reduce((a, c) => a + c.score, 0);
   const manager = score.reduce((a, c) => a + c.managerscore, 0);
   res.status(200).json({
