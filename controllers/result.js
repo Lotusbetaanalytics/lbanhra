@@ -186,8 +186,15 @@ exports.getScore = asyncHandler(async (req, res, next) => {
 // @route   GET/api/v1/staff/score
 // @access   Private/ALL
 exports.getManagerScore = asyncHandler(async (req, res, next) => {
-  const score = await Score.find({ user: req.params.id });
+  const appraisal = await Appraisal.findOne({ status: "Started" });
+  const score = await Score.find({
+    user: req.params.id,
+    quarter: appraisal.quarter,
+  });
+  console.log(score);
+
   const manager = score.reduce((a, c) => a + c.managerscore, 0);
+  console.log(manager);
   res.status(200).json({
     success: true,
     data: manager,

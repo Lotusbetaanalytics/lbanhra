@@ -17,6 +17,7 @@ const ScoreSchema = new mongoose.Schema({
   },
   managerscore: {
     type: Number,
+    default: 0,
   },
   section: {
     type: String,
