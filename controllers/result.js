@@ -10,6 +10,8 @@ const sendEmail = require("../utils/sendEmail");
 // @access   Private/ALL
 exports.uploadScore = asyncHandler(async (req, res, next) => {
   req.body.user = req.staff.id;
+  manager = req.body.total;
+  console.log(req.body);
   req.body.score = req.body.total;
   const checkUser = await AppraisalResult.findOne({
     user: req.staff.id,
@@ -25,6 +27,7 @@ exports.uploadScore = asyncHandler(async (req, res, next) => {
         runValidators: true,
       }
     );
+    console.log(appraisal);
     res.status(200).json({
       success: true,
       data: updateScore,
@@ -48,7 +51,11 @@ exports.uploadScore = asyncHandler(async (req, res, next) => {
 exports.notifyManager = asyncHandler(async (req, res, next) => {
   req.body.user = req.staff.id;
   req.body.score = req.body.total;
+  manager = req.body.total;
   req.body.status = "Awaiting Manager";
+
+  console.log(req.body.total);
+
   const user = await Staff.findById(req.staff.id).populate({
     path: "manager",
     select: "email firstname",
@@ -168,6 +175,7 @@ exports.notifyManager = asyncHandler(async (req, res, next) => {
 // @access   Private/ALL
 exports.getScore = asyncHandler(async (req, res, next) => {
   req.body.user = req.staff.id;
+  // req.body.user = "60f0c0d46d8c6c001584676b";
   const appraisal = await Appraisal.findOne({ status: "Started" });
   const score = await Score.find({
     user: req.staff.id,
@@ -175,6 +183,7 @@ exports.getScore = asyncHandler(async (req, res, next) => {
   });
   const total = score.reduce((a, c) => a + c.score, 0);
   const manager = score.reduce((a, c) => a + c.managerscore, 0);
+
   res.status(200).json({
     success: true,
     data: total,
@@ -224,7 +233,7 @@ exports.fecthStaffScore = asyncHandler(async (req, res, next) => {
 exports.setStaffManagerScore = asyncHandler(async (req, res, next) => {
   const manager_score = await Score.findByIdAndUpdate(
     req.body.question,
-    { managerscore: req.body.score },
+    { managerscore: manager },
     {
       new: true,
       runValidators: true,
@@ -289,7 +298,7 @@ exports.managerScore = asyncHandler(async (req, res, next) => {
 exports.notifyHR = asyncHandler(async (req, res, next) => {
   const appraisal = await Appraisal.findOne({ status: "Started" });
   req.body.user = req.body.id;
-  req.body.score = req.body.total;
+  req.body.managerscore = req.body.total;
   req.body.status = "Awaiting HR";
   const user = await Staff.findById(req.body.id).populate({
     path: "manager",
