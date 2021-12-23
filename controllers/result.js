@@ -233,7 +233,7 @@ exports.fecthStaffScore = asyncHandler(async (req, res, next) => {
 exports.setStaffManagerScore = asyncHandler(async (req, res, next) => {
   const manager_score = await Score.findByIdAndUpdate(
     req.body.question,
-    { managerscore: manager },
+      { managerscore: req.body.score },
     {
       new: true,
       runValidators: true,
