@@ -53,9 +53,6 @@ exports.notifyManager = asyncHandler(async (req, res, next) => {
   req.body.score = req.body.total;
   manager = req.body.total;
   req.body.status = "Awaiting Manager";
-
-  console.log(req.body.total);
-
   const user = await Staff.findById(req.staff.id).populate({
     path: "manager",
     select: "email firstname",
@@ -233,7 +230,7 @@ exports.fecthStaffScore = asyncHandler(async (req, res, next) => {
 exports.setStaffManagerScore = asyncHandler(async (req, res, next) => {
   const manager_score = await Score.findByIdAndUpdate(
     req.body.question,
-    { managerscore: manager },
+    { managerscore: req.body.score },
     {
       new: true,
       runValidators: true,
