@@ -89,6 +89,10 @@ const StaffSchema = new mongoose.Schema({
   emergencyContactAddress: {
     type: String,
   },
+  calibrate: {
+    type: Boolean,
+    default: false,
+  },
   resumptionDate: { type: String },
   bank: { type: String },
   accountName: { type: String },
