@@ -20,7 +20,7 @@ exports.calibrate = asyncHandler(async (req, res, next) => {
       message: message,
     });
     await Calibration.create(req.body);
-    await Score.findByIdAndUpdate(req.body.id, update, {
+    await Staff.findByIdAndUpdate(req.body.id, update, {
       new: true,
       runValidators: true,
     });
