@@ -30,6 +30,10 @@ const InitiativeSchema = new mongoose.Schema({
     required: true,
     ref: "Staff",
   },
+  year: {
+    type: String,
+    required: true,
+  },
   cretaedAt: {
     type: Date,
     default: Date.now,
