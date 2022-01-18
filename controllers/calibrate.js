@@ -16,7 +16,7 @@ exports.calibrate = asyncHandler(async (req, res, next) => {
     await sendEmail({
       email: user.email,
       subject: "Calibration",
-      cc: "obafemi@lotusbetaanalytics.com",
+      cc: "oluwatobiloba@lotusbetaanalytics.com",
       message: message,
     });
     await Calibration.create(req.body);
